@@ -1,6 +1,5 @@
 ---
 title: About
-menu: main
 ---
 Hi, I'm Max and this is my website!
 
