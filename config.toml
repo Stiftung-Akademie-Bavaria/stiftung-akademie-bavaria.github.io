@@ -1,72 +1,33 @@
 baseURL = 'https://stiftung-akademie-bavaria.github.io'
-title = 'Max Nagy´s personal Website'
-theme = 'terminal' # 'researcher' #'risotto'
+title = 'Stiftung Akademie Bavaria'
+languageCode = "en-us"
+theme = ["github.com/theNewDynamic/gohugo-theme-ananke"]
+resourceDir = "../resources"
 
-author = "Max Nagy"
-copyright = "© 2023 Max Nagy"
-paginate = 3
-languageCode = "en"
-DefaultContentLanguage = "en"
-#ignoreErrors = ["error-remote-getjson"]
-
-# Automatically add content sections to main menu
-sectionPagesMenu = "main"
-
-[params]
-
-[params.theme]
-palette = "gruvbox-dark"
-mode = "dark-mode"
-
-# Sidebar: about/bio
-[params.about]
-title = "risotto"
-description = "A [hugo](https://gohugo.io) theme inspired by terminal ricing."
-logo = "images/rice.svg"
-
-# Sidebar: social links
-# Available icon sets:
-# * FontAwesome 5 <https://fontawesome.com/> ('fas fa-' or 'fab-fa' for brands)
-# * Academicons <https://jpswalsh.github.io/academicons> ('ai ai-')
-
-[[params.socialLinks]]
-icon = "fab fa-github"
-title = "GitHub"
-url = "https://github.com/joeroe/risotto"
-
-[[params.socialLinks]]
-icon = "fas fa-envelope"
-title = "Email"
-url = "mailto:example@example.com"
-
-[menu]
-
-  [[menu.main]]
-    identifier = "about"
-    name = "About"
-    url = "/about/"
-    weight = 10
-
-[taxonomies]
-category = "categories"
-tag = "tags"
-series = "series"
-
-# For hugo >= 0.60.0, enable inline HTML
-[markup.goldmark.renderer]
-unsafe = true
-
-[privacy]
-
-  [privacy.youtube]
-    disabled = false
-    privacyEnhanced = true
+DefaultContentLanguage = "de"
+SectionPagesMenu = "main"
+Paginate = 3 # this is set low for demonstrating with dummy content. Set to a higher number
+enableRobotsTXT = true
 
 [languages]
-  [languages.en]
-    title = "Max Nagy"
-    subtitle = "my personal website"
+  [languages.de]
+    title = "Stiftung Akademie Bavaria"
+    weight = 1
+    contentDir = "content/"
+    # languageDirection = 'rtl' for Right-To-Left languages
 
-  [languages.en.params.logo]
-    logoText = "Max Nagy"
-    logoHomeLink = "/"
+[sitemap]
+  changefreq = "monthly"
+  priority = 0.5
+  filename = "sitemap.xml"
+
+[params]
+  text_color = ""
+  author = ""
+  favicon = ""
+  site_logo = ""
+  description = "The last theme you'll ever need. Maybe."
+  # choose a background color from any on this page: https://tachyons.io/docs/themes/skins/ and preface it with "bg-"
+  background_color_class = "bg-black"
+  recent_posts_number = 3
+
