@@ -1,0 +1,88 @@
+<!doctype html><html lang=en><head><title>Speeding up Python with Java :: Max Nagy</title>
+<meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Remember kids, 8 billion devices run Java."><meta name=keywords content><meta name=robots content="noodp"><link rel=canonical href=https://stiftung-akademie-bavaria.github.io/posts/jpype/><link rel=stylesheet href=https://stiftung-akademie-bavaria.github.io/assets/style.css><link rel=stylesheet href=assets/%25!s%28%3cnil%3e%29.css><link rel=apple-touch-icon href=https://stiftung-akademie-bavaria.github.io/img/apple-touch-icon-192x192.png><link rel="shortcut icon" href=https://stiftung-akademie-bavaria.github.io/img/favicon/orange.png><meta name=twitter:card content="summary"><meta property="og:locale" content="en"><meta property="og:type" content="article"><meta property="og:title" content="Speeding up Python with Java"><meta property="og:description" content="Remember kids, 8 billion devices run Java."><meta property="og:url" content="https://stiftung-akademie-bavaria.github.io/posts/jpype/"><meta property="og:site_name" content="Max Nagy"><meta property="og:image" content="img/favicon/%!s(<nil>).png"><meta property="og:image:width" content="2048"><meta property="og:image:height" content="1024"><meta property="article:published_time" content="2023-05-27 11:43:00 +0200 +0200"></head><body><div class="container headings--one-size"><header class=header><div class=header__inner><div class=header__logo><a href=/><div class=logo>Max Nagy</div></a></div><div class=menu-trigger>menu</div></div><nav class=menu><ul class="menu__inner menu__inner--desktop"><li><a href=/about/>About</a></li><li><a href=/posts/>Posts</a></li></ul><ul class="menu__inner menu__inner--mobile"><li><a href=/about/>About</a></li><li><a href=/posts/>Posts</a></li></ul></nav></header><div class=content><div class=post><h1 class=post-title><a href=https://stiftung-akademie-bavaria.github.io/posts/jpype/>Speeding up Python with Java</a></h1><div class=post-meta><span class=post-date>2023-05-27</span></div><div class=post-content><div><p>Speeding up Python with C, C++, Rust or Fortran is pretty common.
+Today we&rsquo;ll do something different and use Java instead. While definitely uncool, its memory safe,
+garbage collected and pretty quick due to JVM magic.</p><p>As an example, we&rsquo;ll be implementing a very simple state machine that counts the number of times
+a value passes a certain limit in a sequence of data. That&rsquo;s not a very useful thing per se, but
+the pattern of a state machine iterating over an array is pretty versatile and something Python is
+really bad at due to its slow loops.</p><p>Let&rsquo;s start with the Python implementation:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>import</span> numpy <span style=color:#66d9ef>as</span> np
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>steps</span>(arr: np<span style=color:#f92672>.</span>ndarray, limit) <span style=color:#f92672>-&gt;</span> tuple[int, int]:
+</span></span><span style=display:flex><span>    up <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>    down <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>    state <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> a <span style=color:#f92672>in</span> arr:
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> state <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span> <span style=color:#f92672>and</span> a <span style=color:#f92672>&gt;</span> limit:
+</span></span><span style=display:flex><span>            up <span style=color:#f92672>+=</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>            state <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>elif</span> state <span style=color:#f92672>==</span> <span style=color:#ae81ff>1</span> <span style=color:#f92672>and</span> a <span style=color:#f92672>&lt;=</span> limit:
+</span></span><span style=display:flex><span>            down <span style=color:#f92672>+=</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>            state <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> up, down
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>assert</span> steps(np<span style=color:#f92672>.</span>array([<span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>1</span>]), <span style=color:#ae81ff>0.5</span>) <span style=color:#f92672>==</span> (<span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>1</span>)
+</span></span></code></pre></div><p>The Java version is also pretty straight forward:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=display:flex><span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Step</span> {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>int</span> up;
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>int</span> down;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#a6e22e>Step</span>(<span style=color:#66d9ef>float</span><span style=color:#f92672>[]</span> arr, <span style=color:#66d9ef>float</span> limit) {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>int</span> up <span style=color:#f92672>=</span> 0;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>int</span> down <span style=color:#f92672>=</span> 0;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>int</span> state <span style=color:#f92672>=</span> 0;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> 0; i <span style=color:#f92672>&lt;</span> arr.<span style=color:#a6e22e>length</span>; i<span style=color:#f92672>++</span>) {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>float</span> a <span style=color:#f92672>=</span> arr<span style=color:#f92672>[</span>i<span style=color:#f92672>]</span>;
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>if</span> (state <span style=color:#f92672>==</span> 0 <span style=color:#f92672>&amp;&amp;</span> a <span style=color:#f92672>&gt;</span> limit) {
+</span></span><span style=display:flex><span>                up <span style=color:#f92672>+=</span> 1;
+</span></span><span style=display:flex><span>                state <span style=color:#f92672>=</span> 1;
+</span></span><span style=display:flex><span>            } <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> (state <span style=color:#f92672>==</span> 1 <span style=color:#f92672>&amp;&amp;</span> a <span style=color:#f92672>&lt;=</span> limit) {
+</span></span><span style=display:flex><span>                down <span style=color:#f92672>+=</span> 1;
+</span></span><span style=display:flex><span>                state <span style=color:#f92672>=</span> 0;
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>this</span>.<span style=color:#a6e22e>up</span> <span style=color:#f92672>=</span> up;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>this</span>.<span style=color:#a6e22e>down</span> <span style=color:#f92672>=</span> down;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>To call it, we add a small wrapper using <a href=https://github.com/jpype-project/jpype>jpype</a>:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>import</span> jpype
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>try</span>:
+</span></span><span style=display:flex><span>    jpype<span style=color:#f92672>.</span>shutdownJVM()
+</span></span><span style=display:flex><span><span style=color:#66d9ef>except</span> <span style=color:#a6e22e>RuntimeError</span>:
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>pass</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>jpype<span style=color:#f92672>.</span>startJVM()
+</span></span><span style=display:flex><span>Step <span style=color:#f92672>=</span> jpype<span style=color:#f92672>.</span>JClass(<span style=color:#e6db74>&#34;Step&#34;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>steps_java</span>(arr: np<span style=color:#f92672>.</span>ndarray, limit: float):
+</span></span><span style=display:flex><span>    res <span style=color:#f92672>=</span> Step(jpype<span style=color:#f92672>.</span>JArray<span style=color:#f92672>.</span>of(arr), limit)
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> res<span style=color:#f92672>.</span>up, res<span style=color:#f92672>.</span>down
+</span></span></code></pre></div><p>Jpype really nailed the ergonomics of using Java objects in python. Only the JVM handling feels a little clunky and
+is pretty slow on my machine. Lets compare the two versions:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>❯ javac Step.java
+</span></span><span style=display:flex><span>❯ ipython3                
+</span></span><span style=display:flex><span>Python 3.11.3 <span style=color:#f92672>(</span>main, Apr  <span style=color:#ae81ff>7</span> 2023, 19:25:52<span style=color:#f92672>)</span> <span style=color:#f92672>[</span>Clang 14.0.0 <span style=color:#f92672>(</span>clang-1400.0.29.202<span style=color:#f92672>)]</span>
+</span></span><span style=display:flex><span>Type <span style=color:#e6db74>&#39;copyright&#39;</span>, <span style=color:#e6db74>&#39;credits&#39;</span> or <span style=color:#e6db74>&#39;license&#39;</span> <span style=color:#66d9ef>for</span> more information
+</span></span><span style=display:flex><span>IPython 8.13.2 -- An enhanced Interactive Python. Type <span style=color:#e6db74>&#39;?&#39;</span> <span style=color:#66d9ef>for</span> help.
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>In <span style=color:#f92672>[</span>1<span style=color:#f92672>]</span>: from step import *
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>In <span style=color:#f92672>[</span>2<span style=color:#f92672>]</span>: arr <span style=color:#f92672>=</span> np.array<span style=color:#f92672>(</span>np.random.random<span style=color:#f92672>(</span>size<span style=color:#f92672>=</span>1000000<span style=color:#f92672>)</span>, dtype<span style=color:#f92672>=</span>np.float32<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>In <span style=color:#f92672>[</span>3<span style=color:#f92672>]</span>: %timeit steps_java<span style=color:#f92672>(</span>arr, .9<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>5.31 ms ± 70.7 µs per loop <span style=color:#f92672>(</span>mean ± std. dev. of <span style=color:#ae81ff>7</span> runs, <span style=color:#ae81ff>100</span> loops each<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>In <span style=color:#f92672>[</span>4<span style=color:#f92672>]</span>: %timeit steps_java<span style=color:#f92672>(</span>arr, .9<span style=color:#f92672>)</span> <span style=color:#75715e># after warmup</span>
+</span></span><span style=display:flex><span>5.11 ms ± <span style=color:#ae81ff>111</span> µs per loop <span style=color:#f92672>(</span>mean ± std. dev. of <span style=color:#ae81ff>7</span> runs, <span style=color:#ae81ff>100</span> loops each<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>In <span style=color:#f92672>[</span>5<span style=color:#f92672>]</span>: %timeit steps<span style=color:#f92672>(</span>arr, .9<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>1.33 s ± 34.6 ms per loop <span style=color:#f92672>(</span>mean ± std. dev. of <span style=color:#ae81ff>7</span> runs, <span style=color:#ae81ff>1</span> loop each<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>In <span style=color:#f92672>[</span>6<span style=color:#f92672>]</span>: %timeit steps<span style=color:#f92672>(</span>arr, .9<span style=color:#f92672>)</span> <span style=color:#75715e># after warmup</span>
+</span></span><span style=display:flex><span>1.23 s ± 67.2 ms per loop <span style=color:#f92672>(</span>mean ± std. dev. of <span style=color:#ae81ff>7</span> runs, <span style=color:#ae81ff>1</span> loop each<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>In <span style=color:#f92672>[</span>7<span style=color:#f92672>]</span>: assert steps<span style=color:#f92672>(</span>arr, .9<span style=color:#f92672>)</span> <span style=color:#f92672>==</span> steps_java<span style=color:#f92672>(</span>arr, .9<span style=color:#f92672>)</span> <span style=color:#75715e># both produce the same result</span>
+</span></span></code></pre></div><p>As you can see, the java version is around 200 times faster, even with the data conversion.
+I also like the ergonomics and that the JVM saves me from cross compiling.</p><p>Remember kids, 8 billion devices run Java.</p></div></div></div></div><footer class=footer><div class=footer__inner><div class="copyright copyright--user"><span>© 2023 Max Nagy</span>
+<span>:: Theme made by <a href=https://twitter.com/panr>panr</a></span></div></div></footer><script src=https://stiftung-akademie-bavaria.github.io/assets/main.js></script><script src=https://stiftung-akademie-bavaria.github.io/assets/prism.js></script></div></body></html>

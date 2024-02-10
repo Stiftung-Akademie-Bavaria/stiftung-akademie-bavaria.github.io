@@ -1,6 +1,0 @@
-[submodule "themes/risotto"]
-	path = themes/risotto
-	url = https://github.com/joeroe/risotto.git
-[submodule "themes/terminal"]
-	path = themes/terminal
-	url = https://github.com/panr/hugo-theme-terminal.git

@@ -1,0 +1,174 @@
+<!doctype html><html lang=en><head><title>The overengineered Solution to my Pigeon Problem :: Max Nagy</title>
+<meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="TL;DR: I built a wifi-equipped water gun to shoot the pigeons on my balcony, controlled over the internet by a python script running openCV reading the camera image of my old iPhone.
+Introduction The pigeons in my backyard find particular pleasures in voiding their excrements onto my balcony. Dissatisfied with this situation, I went online to find a solution. I created a handy table to give you an overview of the vast number of effective established ways to get rid if pigeons:"><meta name=keywords content><meta name=robots content="noodp"><link rel=canonical href=https://stiftung-akademie-bavaria.github.io/posts/pigeons/><link rel=stylesheet href=https://stiftung-akademie-bavaria.github.io/assets/style.css><link rel=stylesheet href=assets/%25!s%28%3cnil%3e%29.css><link rel=apple-touch-icon href=https://stiftung-akademie-bavaria.github.io/img/apple-touch-icon-192x192.png><link rel="shortcut icon" href=https://stiftung-akademie-bavaria.github.io/img/favicon/orange.png><meta name=twitter:card content="summary"><meta property="og:locale" content="en"><meta property="og:type" content="article"><meta property="og:title" content="The overengineered Solution to my Pigeon Problem"><meta property="og:description" content="TL;DR: I built a wifi-equipped water gun to shoot the pigeons on my balcony, controlled over the internet by a python script running openCV reading the camera image of my old iPhone.
+Introduction The pigeons in my backyard find particular pleasures in voiding their excrements onto my balcony. Dissatisfied with this situation, I went online to find a solution. I created a handy table to give you an overview of the vast number of effective established ways to get rid if pigeons:"><meta property="og:url" content="https://stiftung-akademie-bavaria.github.io/posts/pigeons/"><meta property="og:site_name" content="Max Nagy"><meta property="og:image" content="img/favicon/%!s(<nil>).png"><meta property="og:image:width" content="2048"><meta property="og:image:height" content="1024"><meta property="article:published_time" content="2022-04-16 12:05:06 +0200 +0200"></head><body><div class="container headings--one-size"><header class=header><div class=header__inner><div class=header__logo><a href=/><div class=logo>Max Nagy</div></a></div><div class=menu-trigger>menu</div></div><nav class=menu><ul class="menu__inner menu__inner--desktop"><li><a href=/about/>About</a></li><li><a href=/posts/>Posts</a></li></ul><ul class="menu__inner menu__inner--mobile"><li><a href=/about/>About</a></li><li><a href=/posts/>Posts</a></li></ul></nav></header><div class=content><div class=post><h1 class=post-title><a href=https://stiftung-akademie-bavaria.github.io/posts/pigeons/>The overengineered Solution to my Pigeon Problem</a></h1><div class=post-meta><span class=post-date>2022-04-16</span></div><div class=post-content><div><p>TL;DR: I built a wifi-equipped water gun to shoot
+the pigeons on my balcony, controlled over the internet by a
+python script running openCV reading the camera image of my
+old iPhone.</p><hr><h1 id=introduction>Introduction<a href=#introduction class=hanchor arialabel=Anchor>&#8983;</a></h1><p>The pigeons in my backyard find particular pleasures in voiding their excrements onto my balcony. Dissatisfied with this situation, I went online to find a solution. I created a handy table to give you an overview of the vast number of <del>effective</del> <em>established</em> ways to get rid if pigeons:</p><table><thead><tr><th style=text-align:left>Approach</th><th style=text-align:left>Why it doesn&rsquo;t work</th></tr></thead><tbody><tr><td style=text-align:left>Plastic crows</td><td style=text-align:left>Pigeons get used to them</td></tr><tr><td style=text-align:left>Crow stickers</td><td style=text-align:left>Pigeons get used to them</td></tr><tr><td style=text-align:left>Reflective wind mills / CDs / &mldr;</td><td style=text-align:left>Pigeons get used to them</td></tr><tr><td style=text-align:left>Sounds of animals (dogs, predators)</td><td style=text-align:left>Pigeons get used to them</td></tr><tr><td style=text-align:left>Dog and cat hair</td><td style=text-align:left>Pigeons get used to them</td></tr><tr><td style=text-align:left>Ultrasonic sounds</td><td style=text-align:left>Hear me out: Even the people advocating for it admit that pigeons (like humans) are incapable of perceiving ultrasonic sounds. Instead they think that pigeons are <a href=https://en.wikipedia.org/wiki/Electromagnetic_hypersensitivity>wavies</a> and that the mere presence of some imperceptible waves somehow distress the pigeons. You can&rsquo;t make this stuff up. As might be expected, nobody ever had any success with it.</td></tr><tr><td style=text-align:left>Shooting pigeons</td><td style=text-align:left>While it would certainly help coping with the distress of cleaning their crap, its highly illegal in Germany and even after one of my neighbours apparently tried it (I just saw the police leaflets) the number of pigeons didn&rsquo;t noticeably decrease. To be fair, some random neighbour with an air rifle is probably no comparison to the olympic pigeon killers <a href=https://en.wikipedia.org/wiki/Shooting_at_the_1900_Summer_Olympics#Excluded_events>of the past</a>.</td></tr><tr><td style=text-align:left>Getting a cat</td><td style=text-align:left>That should actually work if the cat has regular access to the balcony. But I don&rsquo;t have a cat and it would probably suicide itself in its attempt to hunt pigeons in the fifth floor.</td></tr><tr><td style=text-align:left>Spikes</td><td style=text-align:left>They work IFF you buy the right ones AND put them absolutely everywhere AND are careful to actually mount them correctly AND you don&rsquo;t plan to use the area covered yourself at all AND you don&rsquo;t even want to look at its disgraced looks. So it is completely pointless for a balcony.</td></tr><tr><td style=text-align:left>Nets</td><td style=text-align:left>They work if you can tolerate their looks (I don&rsquo;t) and mount them correctly. In practice they are often mounted incorrectly so you have to remove dead or alive pigeons on a somewhat regular basis.</td></tr><tr><td style=text-align:left>Scaring them away by shouting, water gun, clapping, etc.</td><td style=text-align:left>Pigeons get used to it. Also you typically spend way too little time on the balcony to do keep them away permanently. But what if I outsourced the water gunning to some robotic contraption?</td></tr></tbody></table><p>After a quick burst of manic energy during exam phase, I decided to solve the pigeon problem on my balcony once and for all (and in a humane way). The idea was quite simple: Mount an electric water gun on my balcony, detect pigeons with a web cam and shoot them. Pigeons should not get used to getting sprayed at (at least not while its coldish), I don&rsquo;t have to disfigure my balcony and I&rsquo;m not harming the pigeons in any way or even risk killing them. As I approached this project during my exam phase, it should also be quick to implement using things I already have laying around.</p><h1 id=the-water-gun>The Water Gun<a href=#the-water-gun class=hanchor arialabel=Anchor>&#8983;</a></h1><p>I bought a cheap electric water gun <a href="https://www.amazon.de/Wasserpistole-Elektrische-Wasserblaster-Wasserdicht-Wasserspielzeug/dp/B09578C69R/ref=sr_1_6?keywords=wasserpistole+elektrisch&amp;qid=1650101643&amp;sprefix=wasserpistole+ele%2Caps%2C147&amp;sr=8-6">from Amazon</a> and tested it out: The range of around 3-4 meters is pathetic, but plenty for my balcony.</p><p>Next, I opened it up to figure out how to control it over the internet:</p><p><img src=water_gun.jpg alt="The water gun opened"></p><p>I chose one of my trusty Wemos D1 Mini boards as the brain of the
+water gun. They are small, cheap, offer Wifi and have some shields
+available for them that ease cabling. In particular I&rsquo;m using the
+relay shield. (Relays are basically electrically operated
+switches).
+To control the water gun, I inserted a small paper contraption
+in the battery department that allows me to break the gun&rsquo;s
+power and added a small hole for the cables:</p><p><img src=microcontroller.jpg alt="The water gun with the paper contraption and the microcontroller installed"></p><p>The microcontroller is powered by a USB power bank which is convenient, as the microcontroller does not drain the gun&rsquo;s battery (where
+recheargable batteries don&rsquo;t fit (yes, really)), and the guns motor
+can draw as much power as it wants without crashing the
+microcontroller. Also, it allows me to reprogram the Wemos if I
+mess up the wifi config ;)</p><h1 id=the-camera>The Camera<a href=#the-camera class=hanchor arialabel=Anchor>&#8983;</a></h1><p>I decided to use my old iPhone 6S as a camera: Its small, has a
+battery, works without any configuration and most importantly: I
+had it at hand. After finding a suitable position on my window, I
+designed a simple holding bracket, 3D printed it and glued it
+on my balcony window using <a href="https://www.amazon.de/3M-VHB-Hochleistungsklebeband-schwarz-doppelseitiges/dp/B00EDLPG7Y/ref=sr_1_6?keywords=3M+tape&amp;qid=1650114049&amp;sr=8-6">3M mounting tape</a> <sup id=fnref:1><a href=#fn:1 class=footnote-ref role=doc-noteref>1</a></sup>.
+I use <a href="https://apps.apple.com/de/app/ipcamera-high-end-networkcam/id570912928?l=en">this app</a>
+to get a MJPEG stream of its camera. It works good and
+I like that it lets you black out the display. As a final step,
+I put masking tape on the window, so that the camera does not look
+into my neighbours windows as that would be creepy.</p><h1 id=the-software>The Software<a href=#the-software class=hanchor arialabel=Anchor>&#8983;</a></h1><h4 id=image-analysis>Image Analysis<a href=#image-analysis class=hanchor arialabel=Anchor>&#8983;</a></h4><p>The brains of the operation is a python script using openCV. It
+compares the current image to the normal background <sup id=fnref:2><a href=#fn:2 class=footnote-ref role=doc-noteref>2</a></sup>.
+If the average amount of change of all pixels is above some threshold, we fire the
+gun. We use four small tricks to make this work reliably in practice:</p><ol><li>If a pixel changed by less then 10% we don&rsquo;t count it as 0 in the calculation</li><li>If the amount of change if bigger than some threshold, we ignore it
+(in this case someone touched the camera)</li><li>We add a mask over the image to exclude some flowers that move in
+the wind, as well as the reflections in the window. (Otherwise
+it gets triggered whenever someone comes close to the window)</li><li>After a movement was detected, wait for the movement to stop
+(and the background to stabilise) again.</li></ol><p>This heuristic works pretty reliably.</p><p>The resulting code looks like this:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span>    stream <span style=color:#f92672>=</span> CamGear(source<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;http://IP_OF_IPHONE/live&#34;</span>)<span style=color:#f92672>.</span>start()
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    background <span style=color:#f92672>=</span> <span style=color:#66d9ef>None</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>while</span> <span style=color:#66d9ef>True</span>:
+</span></span><span style=display:flex><span>        frame <span style=color:#f92672>=</span> stream<span style=color:#f92672>.</span>read()
+</span></span><span style=display:flex><span>        <span style=color:#75715e># apply mask</span>
+</span></span><span style=display:flex><span>        frame <span style=color:#f92672>=</span> cv2<span style=color:#f92672>.</span>bitwise_and(frame, frame, mask<span style=color:#f92672>=</span>mask)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e># convert to grayscale</span>
+</span></span><span style=display:flex><span>        frame <span style=color:#f92672>=</span> cv2<span style=color:#f92672>.</span>cvtColor(frame, cv2<span style=color:#f92672>.</span>COLOR_RGB2GRAY)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> background <span style=color:#f92672>is</span> <span style=color:#66d9ef>None</span>:
+</span></span><span style=display:flex><span>            background <span style=color:#f92672>=</span> frame
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>continue</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e># update background</span>
+</span></span><span style=display:flex><span>        background <span style=color:#f92672>=</span> cv2<span style=color:#f92672>.</span>addWeighted(
+</span></span><span style=display:flex><span>            background, background_alpha, frame, (<span style=color:#ae81ff>1</span> <span style=color:#f92672>-</span> background_alpha), <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>        )
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e># calculate difference to background </span>
+</span></span><span style=display:flex><span>        diff <span style=color:#f92672>=</span> cv2<span style=color:#f92672>.</span>absdiff(frame, background)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e># apply threshold to background</span>
+</span></span><span style=display:flex><span>        _, diff <span style=color:#f92672>=</span> cv2<span style=color:#f92672>.</span>threshold(diff, <span style=color:#ae81ff>30</span>, <span style=color:#ae81ff>255</span>, cv2<span style=color:#f92672>.</span>THRESH_BINARY)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        score <span style=color:#f92672>=</span> np<span style=color:#f92672>.</span>mean(diff)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> armed:
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>if</span> score <span style=color:#f92672>&gt;</span> <span style=color:#ae81ff>10</span>:
+</span></span><span style=display:flex><span>                <span style=color:#75715e># camera was moved</span>
+</span></span><span style=display:flex><span>                time<span style=color:#f92672>.</span>sleep(<span style=color:#ae81ff>10</span>)
+</span></span><span style=display:flex><span>                armed <span style=color:#f92672>=</span> <span style=color:#66d9ef>False</span>
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>elif</span> score <span style=color:#f92672>&gt;</span> <span style=color:#ae81ff>0.5</span>:
+</span></span><span style=display:flex><span>                <span style=color:#75715e># PIGEON!</span>
+</span></span><span style=display:flex><span>                armed <span style=color:#f92672>=</span> <span style=color:#66d9ef>False</span>
+</span></span><span style=display:flex><span>                time<span style=color:#f92672>.</span>sleep(<span style=color:#ae81ff>1</span>)
+</span></span><span style=display:flex><span>                frame <span style=color:#f92672>=</span> stream<span style=color:#f92672>.</span>read()
+</span></span><span style=display:flex><span>                cv2<span style=color:#f92672>.</span>imwrite(
+</span></span><span style=display:flex><span>                    <span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;</span><span style=color:#e6db74>{</span>datetime<span style=color:#f92672>.</span>now()<span style=color:#e6db74>}</span><span style=color:#e6db74>.jpg&#34;</span>, 
+</span></span><span style=display:flex><span>                    frame, <span style=color:#75715e># save a picture for later</span>
+</span></span><span style=display:flex><span>                )
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                requests<span style=color:#f92672>.</span>get(<span style=color:#e6db74>&#34;http://IP_OF_SERVER&#34;</span>, timeout<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>else</span>:
+</span></span><span style=display:flex><span>            <span style=color:#75715e># rearm if the image is stable again</span>
+</span></span><span style=display:flex><span>            armed <span style=color:#f92672>=</span> (score <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span>)
+</span></span></code></pre></div><h4 id=networking>Networking<a href=#networking class=hanchor arialabel=Anchor>&#8983;</a></h4><p>The first iteration used a HTTP server on the Wemos Board that
+triggered, whenever a request was received. This was
+straightforward and worked well, until I found out that the wifi
+antenna on the Wemos is too weak to connect to my wifi from the
+balcony. The solution was to connect the Wemos to my phones
+hotspot. The problem is, that now the Wemos and my laptop are now
+in different networks so they cannot talk to one another directly.</p><p>I therefore wrote a small go program (the <em>reflector</em>) that
+accepts HTTP and TCP connections: Whenever it receives a HTTP
+request, it sends &ldquo;PEW!&rdquo; to one of the connected TCP clients
+(Usually there is only one). The code is pretty simple, the only
+tricky part is to ensure that reconnections are handled well.
+Go makes this easy with channels and goroutines:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#66d9ef>func</span> <span style=color:#a6e22e>main</span>() {
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>channel</span> <span style=color:#f92672>:=</span> make(<span style=color:#66d9ef>chan</span> <span style=color:#66d9ef>byte</span>, <span style=color:#ae81ff>42</span>)
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>http</span>.<span style=color:#a6e22e>HandleFunc</span>(<span style=color:#e6db74>&#34;/&#34;</span>, <span style=color:#66d9ef>func</span>(<span style=color:#a6e22e>w</span> <span style=color:#a6e22e>http</span>.<span style=color:#a6e22e>ResponseWriter</span>, <span style=color:#a6e22e>r</span> <span style=color:#f92672>*</span><span style=color:#a6e22e>http</span>.<span style=color:#a6e22e>Request</span>) {
+</span></span><span style=display:flex><span>		<span style=color:#66d9ef>if</span> len(<span style=color:#a6e22e>channel</span>) <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span> {
+</span></span><span style=display:flex><span>			<span style=color:#a6e22e>channel</span> <span style=color:#f92672>&lt;-</span> <span style=color:#ae81ff>42</span>
+</span></span><span style=display:flex><span>		}
+</span></span><span style=display:flex><span>	})
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>go</span> <span style=color:#a6e22e>http</span>.<span style=color:#a6e22e>ListenAndServe</span>(<span style=color:#e6db74>&#34;:4242&#34;</span>, <span style=color:#66d9ef>nil</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>sock</span>, <span style=color:#a6e22e>err</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>net</span>.<span style=color:#a6e22e>Listen</span>(<span style=color:#e6db74>&#34;tcp&#34;</span>, <span style=color:#e6db74>&#34;:4243&#34;</span>)
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>handle</span>(<span style=color:#a6e22e>err</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>for</span> {
+</span></span><span style=display:flex><span>		<span style=color:#a6e22e>conn</span>, <span style=color:#a6e22e>err</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>sock</span>.<span style=color:#a6e22e>Accept</span>()
+</span></span><span style=display:flex><span>		<span style=color:#66d9ef>if</span> <span style=color:#a6e22e>err</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>nil</span> {
+</span></span><span style=display:flex><span>			<span style=color:#66d9ef>continue</span>
+</span></span><span style=display:flex><span>		}
+</span></span><span style=display:flex><span>		<span style=color:#66d9ef>go</span> <span style=color:#66d9ef>func</span>() {
+</span></span><span style=display:flex><span>			<span style=color:#66d9ef>defer</span> <span style=color:#a6e22e>conn</span>.<span style=color:#a6e22e>Close</span>()
+</span></span><span style=display:flex><span>			<span style=color:#66d9ef>for</span> {
+</span></span><span style=display:flex><span>				<span style=color:#f92672>&lt;-</span><span style=color:#a6e22e>channel</span>
+</span></span><span style=display:flex><span>				<span style=color:#a6e22e>_</span>, <span style=color:#a6e22e>err</span> = <span style=color:#a6e22e>conn</span>.<span style=color:#a6e22e>Write</span>([]byte(<span style=color:#e6db74>&#34;PEW!\n&#34;</span>))
+</span></span><span style=display:flex><span>				<span style=color:#66d9ef>if</span> <span style=color:#a6e22e>err</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>nil</span> {
+</span></span><span style=display:flex><span>					<span style=color:#66d9ef>break</span>
+</span></span><span style=display:flex><span>				}
+</span></span><span style=display:flex><span>			}
+</span></span><span style=display:flex><span>		}()
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>The water gun connects via TCP and fires whenever it
+receives &ldquo;PEW!&rdquo;. The python script on my laptop stays as it is and
+simply sends its HTTP requests to the go program on my server
+instead of directly to the Wemos. I chose to use micropython to
+program the Wemos:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>main</span>():
+</span></span><span style=display:flex><span>    pin <span style=color:#f92672>=</span> machine<span style=color:#f92672>.</span>Pin(<span style=color:#ae81ff>5</span>, machine<span style=color:#f92672>.</span>Pin<span style=color:#f92672>.</span>OUT) <span style=color:#75715e># connected to relay</span>
+</span></span><span style=display:flex><span>    addr <span style=color:#f92672>=</span> (<span style=color:#e6db74>&#34;IP_OF_MY_SERVER&#34;</span>, <span style=color:#ae81ff>4243</span>)
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>while</span> <span style=color:#66d9ef>True</span>:
+</span></span><span style=display:flex><span>        s <span style=color:#f92672>=</span> socket<span style=color:#f92672>.</span>socket()
+</span></span><span style=display:flex><span>        s<span style=color:#f92672>.</span>connect(addr)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>try</span>:
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>while</span> <span style=color:#66d9ef>True</span>:
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>if</span> <span style=color:#e6db74>b</span><span style=color:#e6db74>&#34;PEW&#34;</span> <span style=color:#f92672>in</span> s<span style=color:#f92672>.</span>recv(<span style=color:#ae81ff>255</span>): 
+</span></span><span style=display:flex><span>                    print(<span style=color:#e6db74>&#34;PEW!&#34;</span>)
+</span></span><span style=display:flex><span>                    pin<span style=color:#f92672>.</span>value(<span style=color:#ae81ff>1</span>)
+</span></span><span style=display:flex><span>                    time<span style=color:#f92672>.</span>sleep(<span style=color:#ae81ff>0.5</span>)
+</span></span><span style=display:flex><span>                    pin<span style=color:#f92672>.</span>value(<span style=color:#ae81ff>0</span>)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>finally</span>:
+</span></span><span style=display:flex><span>            s<span style=color:#f92672>.</span>close()
+</span></span></code></pre></div><p>The smart ones among you may have noticed some bugs in the snippets
+above: TCP does not guarantee that our &ldquo;PEW!&rdquo; message is sent
+received in a single package; if multiple clients are connected,
+only one receives the message (which may be disconnected);
+and the whole operation is entirely unencrypted and
+unauthenticated. And you&rsquo;d be absolutely right. A nice thing about
+writing software just for oneself is that its completely sufficent
+if it works for me (tm). Of course I made sure that the setup cannot
+be used to gain access to my network / remote code execution /
+host child porn / be used for DDOS or all of the other stuff that
+may happen when you deploy software on the internet. If this post
+motivates someone to find my server and empty the whole whopping
+200ml of water on my balcony, I may add a password and or let the
+reflector bind only my VPN. But if you made it this far through the
+text you wouldn&rsquo;t do that, right? &lt;3</p><h1 id=results>Results<a href=#results class=hanchor arialabel=Anchor>&#8983;</a></h1><p>Let&rsquo;s have a look at our first customer:</p><p><img src=1.jpg alt></p><p>Look at him sitting there, just behind the railings. This is
+precisely where the water gun <em>would</em> be pointing at. This picture
+was taken, in the brief period between realising that the wifi on
+the balcony is too weak and coming up with the reflector solution.
+Luckily he was not in the mood for release.</p><p>After I installed the updated version including a working water
+gun, not a single pigeon was seen again. <em>For six days</em>. Maybe
+shouting at pigeons is not that bad of a solution after all?
+Luckily I had an exam phase to distract me from this
+disappointment.</p><p>I was quite relieved-ish to find another customer on day seven:</p><p><img src=4.jpg alt></p><p>Spot on! This success lasted for a few days until the pigeons took
+it to the third dimension:</p><p><img src=5.jpg alt></p><p>I guess, I&rsquo;ll just keep the table inside for now.</p><p>To be continued&mldr;</p><div class=footnotes role=doc-endnotes><hr><ol><li id=fn:1><p>I <strong>love</strong> this stuff! I mounted various tablets for my
+<a href=https://github.com/maxmunzel/strichliste2.0/blob/master/README.md>tally list project</a>,
+half of the things on my racing drone, the side panels of my
+kitchen(!), all the cables smart home hubs and switches under my desk,
+power strips in every imaginable place, and so many other things with it.&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:2><p>The background is computed as the moving average of all images the software gets.
+For each new image the software gets from the camera the background is calculated
+as <code>background[x,y] &lt;- background[x,y] * 0.95 + new_image[x,y] * 0.05</code> for each pixel.
+(the software works in black and white) If we just took one picture in the beginning,
+we would detect a lot of differences as clouds change the lighting throughout the day.&#160;<a href=#fnref:2 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></div></div></div></div></div><footer class=footer><div class=footer__inner><div class="copyright copyright--user"><span>© 2023 Max Nagy</span>
+<span>:: Theme made by <a href=https://twitter.com/panr>panr</a></span></div></div></footer><script src=https://stiftung-akademie-bavaria.github.io/assets/main.js></script><script src=https://stiftung-akademie-bavaria.github.io/assets/prism.js></script></div></body></html>
