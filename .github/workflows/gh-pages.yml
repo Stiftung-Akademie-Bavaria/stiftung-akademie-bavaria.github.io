@@ -22,10 +22,10 @@ jobs:
           # extended: true
 
       - name: Build
-        run: hugo --minify
+        run: hugo 
 
-      # - name: Create CNAME file
-      #   run: echo "maxnagy.com" > ./public/CNAME
+      - name: Create CNAME file
+        run: echo "akademie-bavaria.de" > ./public/CNAME
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
