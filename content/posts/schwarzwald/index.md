@@ -2,6 +2,9 @@
 title: "Exkursion Nationalpark Schwarzwald"
 featured_image: 'landschaft.jpg'
 ---
+
+![Der Schwarzwald](landschaft2.jpg)
+
 Für den durchschnittlichen Studenten besteht Umweltschutz aus
 Mülltrennung, der Wald aus Bäumen und Biologie ist eine ferne
 Erinnerung aus Schulzeiten. Um das zu ändern, ging es am 2. Juli
@@ -62,6 +65,8 @@ von Messpunkten, die bewusst abseits der Wege platziert sind.
 Am Fuß des Weges angekommen, erreichten wir nun das Ziel der
 Wanderung: Den Wilden See. (nicht zu verwechseln mit dem Wildsee,
 der im selben Park ein paar Kilometer weiter liegt!)
+
+![Der Wilde See](wildsee.jpg)
 
 Die Geschichte des Sees ist tatsächlich wild: Im Nordschwarzwald
 gab es im Mittelalter eine florierende Forstindustrie, die die
